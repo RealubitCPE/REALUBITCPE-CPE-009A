@@ -1,0 +1,127 @@
+#include <iostream>
+#include <string>
+
+// 1. Array-based Stack Implementation
+class ArrayStack {
+private:
+    char* arr;
+    int capacity;
+    int topIndex;
+
+public:
+    ArrayStack(int size = 100) {
+        capacity = size;
+        arr = new char[capacity];
+        topIndex = -1;
+    }
+
+    ~ArrayStack() {
+        delete[] arr;
+    }
+
+    void push(char item) {
+        if (topIndex < capacity - 1) {
+            arr[++topIndex] = item;
+        }
+    }
+
+    char pop() {
+        if (!isEmpty()) {
+            return arr[topIndex--];
+        }
+        return '\0';
+    }
+
+    bool isEmpty() const {
+        return topIndex == -1;
+    }
+};
+
+// 2. Linked List Nodes and Queue Implementation
+struct Node {
+    char data;
+    Node* next;
+    Node(char val) : data(val), next(nullptr) {}
+};
+
+class LinkedListQueue {
+private:
+    Node* front;
+    Node* rear;
+
+public:
+    LinkedListQueue() : front(nullptr), rear(nullptr) {}
+
+    ~LinkedListQueue() {
+        while (!isEmpty()) {
+            dequeue();
+        }
+    }
+
+    void enqueue(char item) {
+        Node* newNode = new Node(item);
+        if (rear == nullptr) {
+            front = rear = newNode;
+            return;
+        }
+        rear->next = newNode;
+        rear = newNode;
+    }
+
+    char dequeue() {
+        if (isEmpty()) return '\0';
+        Node* temp = front;
+        char data = temp->data;
+        front = front->next;
+        if (front == nullptr) {
+            rear = nullptr;
+        }
+        delete temp;
+        return data;
+    }
+
+    bool isEmpty() const {
+        return front == nullptr;
+    }
+};
+
+// 3. Palindrome Checker Function
+bool isPalindrome(const std::string& str) {
+    ArrayStack stack(str.length());
+    LinkedListQueue queue;
+
+    // Load characters into both structures
+    for (char ch : str) {
+        stack.push(ch);
+        queue.enqueue(ch);
+    }
+
+    // Compare LIFO vs FIFO order
+    while (!stack.isEmpty() && !queue.isEmpty()) {
+        if (stack.pop() != queue.dequeue()) {
+            return false; // Character mismatch
+        }
+    }
+    return true;
+}
+
+// 4. Main Driver code matching your validation table
+int main() {
+    std::string testCases[] = {"10201", "1003003001", "88", "0", "202"};
+    
+    std::cout << "---------------------------------------------\n";
+    std::cout << "Palindrome?\t| Output (Console)\t| Remark\n";
+    std::cout << "---------------------------------------------\n";
+    
+    for (const std::string& testCase : testCases) {
+        std::cout << testCase << "\t\t| ";
+        if (isPalindrome(testCase)) {
+            std::cout << "Palindrome\t\t| Match\n";
+        } else {
+            std::cout << "Not Palindrome\t| Mismatch\n";
+        }
+    }
+    std::cout << "---------------------------------------------\n";
+    
+    return 0;
+}

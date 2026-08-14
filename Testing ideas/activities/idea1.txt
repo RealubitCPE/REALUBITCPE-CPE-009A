@@ -1,0 +1,16 @@
+FUNCTION isPalindrome(inputString):
+    CREATE empty ArrayStack
+    CREATE empty LinkedListQueue
+    
+    FOR each character 'ch' in inputString:
+        ArrayStack.push(ch)
+        LinkedListQueue.enqueue(ch)
+    END FOR
+    
+    WHILE ArrayStack is not empty AND LinkedListQueue is not empty:
+        IF ArrayStack.pop() != LinkedListQueue.dequeue() THEN
+            RETURN False
+        END IF
+    END WHILE
+    
+    RETURN True
